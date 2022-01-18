@@ -1,8 +1,57 @@
-import React from 'react';
-import { NavLink } from "react-router-dom";
+import React, { useState } from 'react';
+import { NavLink , useHistory } from "react-router-dom";
 import authentication from "../Images/Authentication.svg"
 
 const Signup = () => {
+  const History = useHistory();
+  const [user, setUser] = useState({
+    fname: "", lname: "", email: "", phone: "", password: "", cpassword: ""
+  });
+
+  let name, value;
+
+  const handleInputs = (e) => {
+    console.log(e);
+    name = e.target.name;
+    value = e.target.value;
+
+    setUser({...user, [name]:value})
+  }
+
+  const PostData = async (e) => {
+    e.preventDefault();
+
+    const { fname, lname, email, phone, password, cpassword } = user;
+
+    const res = await fetch("/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        fname,
+        lname,
+        email,
+        phone,
+        password,
+        cpassword,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.status === 422 || !data) {
+      window.alert("Invalid Registration");
+      console.log("Invalid Registration");
+    } else {
+      window.alert("Registration Successfully");
+      console.log("Registration successfully");
+
+      History.push("/login");
+    }
+
+  }
+
     return (
       <>
         <section className="signup">
@@ -10,29 +59,33 @@ const Signup = () => {
             <div className="signup-content">
               <div className="signup-form">
                 <h2 classname="form-title">Signup</h2>
-                <form className="register-form" id="register-form">
+                <form method="POST" className="register-form" id="register-form">
                   <div className="form-group">
-                    <label htmlFor="name">
+                    <label htmlFor="fname">
                       <i class="zmdi zmdi-account material-icons-name"></i>
                     </label>
                     <input
                       type="text"
-                      name="name"
+                      name="fname"
                       id="fname"
                       autocomplete="off"
+                      value={user.fname}
+                      onChange={handleInputs}
                       placeholder="First Name"
                     />
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="name">
+                    <label htmlFor="lname">
                       <i class="zmdi zmdi-account material-icons-name"></i>
                     </label>
                     <input
                       type="text"
-                      name="name"
+                      name="lname"
                       id="lname"
                       autocomplete="off"
+                      value={user.lname}
+                      onChange={handleInputs}
                       placeholder="Last Name"
                     />
                   </div>
@@ -46,6 +99,8 @@ const Signup = () => {
                       name="email"
                       id="email"
                       autocomplete="off"
+                      value={user.email}
+                      onChange={handleInputs}
                       placeholder="your Email"
                     />
                   </div>
@@ -59,6 +114,8 @@ const Signup = () => {
                       name="phone"
                       id="phone"
                       autocomplete="off"
+                      value={user.phone}
+                      onChange={handleInputs}
                       placeholder="your Phone"
                     />
                   </div>
@@ -72,6 +129,8 @@ const Signup = () => {
                       name="password"
                       id="password"
                       autocomplete="off"
+                      value={user.password}
+                      onChange={handleInputs}
                       placeholder="your Password"
                     />
                   </div>
@@ -85,6 +144,8 @@ const Signup = () => {
                       name="cpassword"
                       id="cpassword"
                       autocomplete="off"
+                      value={user.cpassword}
+                      onChange={handleInputs}
                       placeholder="Confirm your password"
                     />
                   </div>
@@ -96,6 +157,7 @@ const Signup = () => {
                       id="signup"
                       className="form-submit"
                       value="Register"
+                      onClick={PostData}
                     />
                   </div>
                 </form>

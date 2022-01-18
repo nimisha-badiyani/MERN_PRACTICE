@@ -1,12 +1,71 @@
-import React from "react";
+import React,{ useContext }from "react";
 import "bootstrap/dist/css/bootstrap.css";
 
+import { UserContext } from "../App";
+
 const Navbar = () => {
+  const { state, dispatch } = useContext(UserContext);
+
+  const RenderMenu = () => {
+    if (state) {
+      return (
+        <>
+          <li className="nav-item active">
+            <a className="nav-link active" aria-current="page" href="/">
+              Home
+            </a>
+          </li>
+
+          <li className="nav-item">
+            <a className="nav-link" aria-current="page" href="/posts">
+              Posts
+            </a>
+          </li>
+
+          <li className="nav-item">
+            <a className="nav-link" aria-current="page" href="/logout">
+              Logout
+            </a>
+          </li>
+        </>
+      );
+    }
+    else {
+      return (
+        <>
+          <li className="nav-item active">
+            <a className="nav-link active" aria-current="page" href="/">
+              Home
+            </a>
+          </li>
+
+          <li className="nav-item">
+            <a className="nav-link" aria-current="page" href="/posts">
+              Posts
+            </a>
+          </li>
+
+          <li className="nav-item">
+            <a className="nav-link" aria-current="page" href="/login">
+              Login
+            </a>
+          </li>
+
+          <li className="nav-item">
+            <a className="nav-link" aria-current="page" href="/signup">
+              Registration
+            </a>
+          </li>
+
+        </>
+      );
+    }
+  }
+
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
-          
           <button
             className="navbar-toggler"
             type="button"
@@ -20,41 +79,11 @@ const Navbar = () => {
           </button>
           <div className="collapse navbar-collapse" id="navbarNavDropdown">
             <ul className="navbar-nav ms-auto">
-              <li className="nav-item active">
-                <a className="nav-link active" aria-current="page" href="/">
-                  Home
-                </a>
-              </li>
+              
+            <RenderMenu />
+              
+              
 
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  aria-current="page"
-                  href="/posts"
-                >
-                  Posts
-                </a>
-              </li>
-
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  aria-current="page"
-                  href="/login"
-                >
-                  Login
-                </a>
-              </li>
-
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  aria-current="page"
-                  href="/signup"
-                >
-                  Registration
-                </a>
-              </li>
             </ul>
           </div>
         </div>

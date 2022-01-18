@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  date: {
+    type: Date,
+    default: Date.now(),
+  },
   tokens: [
     {
       token: {
@@ -52,13 +56,14 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.generateAuthToken = async function () {
   try {
     let generatetoken = jwt.sign({ _id: this._id }, process.env.SECRET_KEY);
-    // console.log(generatetoken);
     this.tokens = this.tokens.concat({ token: generatetoken });
     console.log("token");
     await this.save();
+    // console.log(token);
+    console.log(generatetoken);
     return generatetoken;
   } catch (err) {
-    // console.log(err);
+    console.log(err);
   }
 };
 

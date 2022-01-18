@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
+const Authenticate = require("../middleware/Authenticate")
 
 require("../db/conn");
 const User = require("../model/userSchema");
@@ -59,14 +60,14 @@ router.post('/signin', async (req, res) => {
     // console.log(userLogin);
 
     if (userLogin) {
-        const isMatch = await bcrypt.compare(password, userLogin.password);
+      const isMatch = await bcrypt.compare(password, userLogin.password);
         
-      const token = await userLogin.generateAuthToken();
-      console.log(token);
+      token = await userLogin.generateAuthToken();
+      // console.log(token);
 
       res.cookie("jwt", token, {
         expires: new Date(Date.now() + 25892000000),
-        httpOnly:true
+        httpOnly: true
       });
               
       if (!isMatch) {
@@ -75,13 +76,29 @@ router.post('/signin', async (req, res) => {
         res.json({ message: "signin successfully" });
       }
     
-  } else {
-    res.status(400).json({ error: "not signin successfully" });
-  }
-      
-}catch (err) {
-        // console.log(err);
+    } else {
+      res.status(400).json({ error: "not signin successfully" });
     }
-})
+      
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.get("/Posts", Authenticate,(req, res) => {
+  // console.log("Hello, this is my posts");
+  res.send(req.rootUser);
+});
+
+router.get("/getdata", Authenticate, (req, res) => {
+  // console.log("Hello, this is my data");
+  res.send(req.rootUser);
+});
+
+router.get("/Logout", (req, res) => {
+  console.log("Hello, this is logout page");
+  res.clearCookie('jwt', { path: '/' });
+  res.status(200).send('User logout');
+});
 
 module.exports = router;
